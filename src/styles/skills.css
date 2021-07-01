@@ -1,0 +1,17 @@
+.skill-detail-enter {
+  opacity: 0;
+}
+
+.skill-detail-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+
+.skill-detail-exit {
+  opacity: 1;
+}
+
+.skill-detail-exit-active {
+  opacity: 0;
+  transition: opacity 500ms ease-out;
+}

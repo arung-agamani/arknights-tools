@@ -3,12 +3,18 @@ import { Link } from 'react-router-dom';
 import axios from '../utils/axios';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import styled from 'styled-components';
+import { BeatLoader } from 'react-spinners';
 
 const Operators = () => {
     const [operatorList, setOperatorList] = useState<Array<any>>([]);
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
+        window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: 'smooth'
+        });
         (async() => {
             try {
                 const cache = sessionStorage.getItem('operatorList')
@@ -37,19 +43,20 @@ const Operators = () => {
         <Wrapper className="container flex flex-col justify-center items-center">
             <h1 className="text-6xl my-4 text-center">Operators List</h1>
             <div className="w-1/2 text-center">
-                {operatorList.length && operatorList.map(op => {
+                {operatorList.length && operatorList.filter(x => x.char_id.startsWith('char')).map(op => {
                     return (
                         <Link to={`/operator/${op.char_id}`}>
-                            <div className="flex bg-ak-panel hover:bg-gray-400 hover:cursor-pointer">
-                                <div className="flex-grow px-3 text-3xl">{op.name}</div>
-                                <div className="">
+                            <div className="flex bg-ak-panel hover:bg-gray-400 hover:cursor-pointer border-2 border-b-0 border-yellow-900">
+                                <div className="flex-grow px-3 text-3xl self-center">{op.name}</div>
+                                
                                     <LazyLoadImage
+                                        placeholder={<BeatLoader color="#FFFFFF"/>}
+                                        className="border-l-2 border-yellow-900 self-center"
                                         height={100}
                                         width={100}
                                         effect="opacity"
                                         src={`https://ark-files-bucket.s3.ap-southeast-1.amazonaws.com/img/avatars/${op.char_id}.png`}
                                     />
-                                </div>
                             </div>
                         </Link>
                     )
@@ -61,6 +68,9 @@ const Operators = () => {
 
 const Wrapper = styled.div`
     background-color: #242221;
+    * {
+        box-sizing: content-box;
+    }
     .bg-ak-panel {
         background-color: #36322f;
     }

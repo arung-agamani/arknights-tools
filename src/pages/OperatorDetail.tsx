@@ -2,9 +2,10 @@
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router'
 import { Link } from 'react-router-dom'
-import axios from '../utils/axios';
+import { BeatLoader } from 'react-spinners';
 import styled from 'styled-components';
 
+import  axios from '../utils/axios';
 import Skills from '../components/Operator/Skills';
 import { OPSkillRaw } from '../interfaces/Operator';
 
@@ -76,7 +77,11 @@ const OperatorDetail = () => {
     const [isFetching, setIsFetching] = useState(true)
 
     useEffect(() => {
-        window.scrollTo(0,0);
+        window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: 'smooth'
+        });
         (async() => {
             try {
                 const { data: info } = await axios.get(`/ak/operator/${charId}/all`)
@@ -93,7 +98,9 @@ const OperatorDetail = () => {
     
     if (isFetching) return (
         <Wrapper>
-            <div className="h-screen"></div>
+            <div className="h-screen w-screen container py-8 flex justify-center">
+                <BeatLoader color="#FFFFFF"/>
+            </div>
         </Wrapper>
     );
     return(
@@ -103,24 +110,26 @@ const OperatorDetail = () => {
             </Link>
             <h1 className="text-6xl my-4">{operatorData.name}</h1>
             <div className="flex">
-                <div className="w-1/2 text-center block mx-2">
-                    <div style={{
-                        backgroundImage: `url('https://ark-files-bucket.s3.ap-southeast-1.amazonaws.com/img/ui/chara/bg2.png')`,
-                        backgroundPosition: 'top left',
-                        overflow: 'hidden',
-                    }}>
-                        <div className="bg-ak-panel shadow-lg" style={{
-                            display: 'block',
-                            position: 'relative',
-                            top: '10px',
-                            left: '10px',
-                            width: '100px',
-                            height: '100px',
+                <div className="w-1/2 flex flex-col">
+                    <div className="text-center block mx-2">
+                        <div style={{
+                            backgroundImage: `url('https://ark-files-bucket.s3.ap-southeast-1.amazonaws.com/img/ui/chara/bg2.png')`,
+                            backgroundPosition: 'top left',
+                            overflow: 'hidden',
                         }}>
-                            <img height={100} width={100} src={`https://ark-files-bucket.s3.ap-southeast-1.amazonaws.com/img/classes/class_${transformProfession(operatorData.profession).toLowerCase()}.png`} alt=""/>
-                        </div>
+                            <div className="bg-ak-panel shadow-lg" style={{
+                                display: 'block',
+                                position: 'relative',
+                                top: '10px',
+                                left: '10px',
+                                width: '100px',
+                                height: '100px',
+                            }}>
+                                <img height={100} width={100} src={`https://ark-files-bucket.s3.ap-southeast-1.amazonaws.com/img/classes/class_${transformProfession(operatorData.profession).toLowerCase()}.png`} alt=""/>
+                            </div>
 
-                        <img style={{ transform: 'scale(1.25, 1.25)' }} src={`https://ark-files-bucket.s3.ap-southeast-1.amazonaws.com/img/characters/${charId}_1.png`} alt="" />
+                                <img style={{ transform: 'scale(1.25, 1.25)', maxHeight: '80vh', display: 'block', margin: '0 auto'}} src={`https://ark-files-bucket.s3.ap-southeast-1.amazonaws.com/img/characters/${charId}_1.png`} alt="" />
+                        </div>
                     </div>
                     
                 </div>

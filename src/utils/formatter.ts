@@ -56,22 +56,26 @@ const styles = {
 const stylesKeys = Object.keys(styles);
 const stylesValues = Object.values(styles);
 
-export function formatText(format1: string, format2: string, text: string): string {
+export function formatText(format1: string, format2: string, text: string, target?: number, preSymbol?: string, percentMult?: string, postSymbol?: string): string {
     const key = format1 + '.' + format2
     const idx = stylesKeys.findIndex(x => x === key);
-    if (key) {
-        const color = stylesValues[idx]
-        if (color.startsWith("<color=")) {
-            // return colored
-            const textColor = color.slice(7, 14);
-            return `<span style="color: ${textColor}">${text}</span>`
-        } else if (color.startsWith("<i")) {
-            return `<i>${text}</i>`
+    const color = stylesValues[idx]
+    const transformedTargetData = (percentMult && target) ? (Math.abs(target) * 100).toFixed(1) : target
+    if (color.startsWith("<color=")) {
+        const textColor = color.slice(7, 14);
+        if (target) {
+            return `<span style="color: ${textColor}">${preSymbol ? preSymbol : ''}${transformedTargetData || text}${percentMult && '%'}${postSymbol ? postSymbol : ''}</span>`
         } else {
-            return text
+            return `<span style="color: ${textColor}">${preSymbol ? preSymbol : ''}${text}${postSymbol ? postSymbol : ''}</span>`
+        }
+    } else if (color.startsWith("<i")) {
+        if (target) {
+            return `<i>${preSymbol ? preSymbol : ''}${transformedTargetData || text}${percentMult && '%'}${postSymbol ? postSymbol : ''}</i>`
+        } else {
+            return `<i>${preSymbol ? preSymbol : ''}${preSymbol ? preSymbol : ''}${text}${postSymbol ? postSymbol : ''}</i>`
         }
     } else {
-        return text
+        return `${transformedTargetData || text}${percentMult && '%'}${postSymbol ? postSymbol : ''}`
     }
 }
 
