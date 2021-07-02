@@ -1,17 +1,38 @@
-.skill-detail-enter {
-  opacity: 0;
+body {
+  background-color: #242221;
 }
 
-.skill-detail-enter-active {
-  opacity: 1;
-  transition: opacity 500ms ease-in;
+.page-enter {
+  z-index: 10;
+  transform: translateX(100%);
 }
 
-.skill-detail-exit {
-  opacity: 1;
+.page-enter-active {
+  z-index: 10;
+  transform: translateX(0%);
+  transition: transform 1000ms;
 }
 
-.skill-detail-exit-active {
-  opacity: 0;
-  transition: opacity 500ms ease-out;
+.page-enter-done {
+  z-index: 10;
+  transform: translateX(0%);
+}
+
+.page-exit {
+  position: absolute;
+  top: 2.75rem;
+  left: 0;
+  z-index: 5;
+  transform: translateX(0%);
+}
+
+.page-exit-active {
+  z-index: 5;
+  transform: translateX(-100%);
+  transition: transform 1000ms;
+}
+
+.page-exit-done {
+  z-index: 5;
+  transform: translateX(-100%);
 }

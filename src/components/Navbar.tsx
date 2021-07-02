@@ -3,15 +3,15 @@ import { Link } from 'react-router-dom'
 
 const Navbar = () => {
     return (
-        <div>
+        <div className="sticky">
             <nav className="bg-gray-800">
                 <div className="container flex mx-auto text-white">
-                    <div className="px-2 py-2 hover:bg-gray-300 hover:text-black">
+                    <div className="px-2 py-2 text-xl hover:bg-gray-300 hover:text-black">
                         <Link to="/">
                             Dashboard
                         </Link>
                     </div>
-                    <div className="px-2 py-2 hover:bg-gray-300 hover:text-black">
+                    <div className="px-2 py-2 text-xl hover:bg-gray-300 hover:text-black">
                         <Link to="/operators">
                             Operators
                         </Link>

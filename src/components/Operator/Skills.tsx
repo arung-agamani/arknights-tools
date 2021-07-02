@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { CSSTransition } from 'react-transition-group';
+import styled from 'styled-components';
 
 import axios from '../../utils/axios';
 import { formatText } from '../../utils/formatter';
 import { OPSkill, OPSkillRaw, SkillLevelUpCondition } from '../../interfaces/Operator';
-import '../../styles/skills.css'
+// import '../../styles/skills.css'
 
 interface Props {
     skills: OPSkillRaw[];
 }
 const Skills: React.FC<Props> = ({skills}) => {
+    const [level, setLevel] = useState(0);
     const skillArr: OPSkill[] = skills.map(skill => {
         let lvlData = skill.levelUpCostCond[0]
         return {
@@ -17,16 +19,35 @@ const Skills: React.FC<Props> = ({skills}) => {
             levelUpCostCond: (JSON.parse(lvlData)) as SkillLevelUpCondition[]
         }
     })
-    console.log(skillArr)
     return (
-        <div>
+        <Wrapper>
             <p className="text-4xl my-4 bg-ak-panel px-2 py-2">Skills</p>
             {skillArr.map(skill => {
-                return (<SkillDetail skill={skill} />)
+                return (<SkillDetail skill={skill} level={level} setLevel={setLevel} />)
             })}
-        </div>
+        </Wrapper>
     )
 }
+
+const Wrapper = styled.div`
+    .skill-detail-enter {
+    opacity: 0;
+    }
+
+    .skill-detail-enter-active {
+    opacity: 1;
+    transition: opacity 500ms ease-in;
+    }
+
+    .skill-detail-exit {
+    opacity: 1;
+    }
+
+    .skill-detail-exit-active {
+    opacity: 0;
+    transition: opacity 500ms ease-out;
+    }
+`
 
 const regexDesc = new RegExp(/<@([a-z]*).([a-z]*)>([A-Za-z .';%0-9()+-]*){?-?([A-Za-z_@. ]*)([:0-9.%]*)}?([A-Za-z .';%0-9()]*)<\/>/, 'g');
 
@@ -53,9 +74,8 @@ function transformFormat(descriptionText: string, blackboard: SkillLevelBlackboa
     return outText
 }
 
-const SkillDetail: React.FC<{ skill: OPSkill }> = ({skill}) => {
+const SkillDetail: React.FC<{ skill: OPSkill, level: number, setLevel?: Function }> = ({skill, setLevel, level}) => {
     const [detail, setDetail] = useState<any>(null)
-    const [level, setLevel] = useState(0);
     const [isFetching, setIsFetching] = useState(true);
 
     useEffect(() => {
@@ -86,10 +106,10 @@ const SkillDetail: React.FC<{ skill: OPSkill }> = ({skill}) => {
                 <div className="flex flex-row border-yellow-800 border-2 border-r-0 w-100">
                     {detail.levels.map((_: any, lvl: number) => {
                         return <div className={`p-1 ${lvl === level ? 'bg-yellow-800' : ''} hover:bg-gray-500 hover:cursor-pointer flex-grow text-center border-yellow-800 border-r-2`}
-                            onClick={() => setLevel(lvl)}
+                            onClick={() => setLevel && setLevel(lvl)}
                             style={{flexBasis: 0}}
                         >
-                            <span>{lvl + 1}</span>
+                            <span>{lvl <= 6 ? lvl + 1 : `M${lvl - 6}`}</span>
                         </div>
                     })}
                 </div>

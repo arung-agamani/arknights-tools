@@ -34,16 +34,20 @@ const Operators = () => {
         })()
     }, [])
     if (loading) return (
-        <Wrapper className="container flex flex-col justify-center items-center">
+        <Wrapper className="flex flex-col justify-center items-center w-full">
             <h1 className="text-6xl my-4">Operators List</h1>
             <div className="h-screen"></div>
         </Wrapper>
     );
     return (
-        <Wrapper className="container flex flex-col justify-center items-center">
+        <Wrapper className="flex flex-col justify-center items-center w-full">
             <h1 className="text-6xl my-4 text-center">Operators List</h1>
             <div className="w-1/2 text-center">
-                {operatorList.length && operatorList.filter(x => x.char_id.startsWith('char')).map(op => {
+                {operatorList.length && operatorList.filter(x => x.char_id.startsWith('char')).sort((a,b) => {
+                    if (a.name < b.name) return -1
+                    if (a.name > b.name) return 1
+                    return 0
+                }).map(op => {
                     return (
                         <Link to={`/operator/${op.char_id}`}>
                             <div className="flex bg-ak-panel hover:bg-gray-400 hover:cursor-pointer border-2 border-b-0 border-yellow-900">
@@ -73,6 +77,7 @@ const Wrapper = styled.div`
     }
     .bg-ak-panel {
         background-color: #36322f;
+        transition: background-color 100ms;
     }
     .bg-ak-panel:hover {
         background-color: #47413b;

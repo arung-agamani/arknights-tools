@@ -97,14 +97,14 @@ const OperatorDetail = () => {
 
     
     if (isFetching) return (
-        <Wrapper>
-            <div className="h-screen w-screen container py-8 flex justify-center">
+        <Wrapper className="h-screen w-full py-8 px-8">
+            <div className="flex justify-center">
                 <BeatLoader color="#FFFFFF"/>
             </div>
         </Wrapper>
     );
     return(
-        <Wrapper className="container py-8 px-8" >
+        <Wrapper className="w-full py-8 px-8" >
             <Link to="/operators">
                 <h1 className="bg-ak-panel rounded-lg hover:cursor-pointer hover:bg-gray-400 text-center py-2 text-2xl">Back to Operator List</h1>
             </Link>
@@ -131,10 +131,10 @@ const OperatorDetail = () => {
                                 <img style={{ transform: 'scale(1.25, 1.25)', maxHeight: '80vh', display: 'block', margin: '0 auto'}} src={`https://ark-files-bucket.s3.ap-southeast-1.amazonaws.com/img/characters/${charId}_1.png`} alt="" />
                         </div>
                     </div>
+                    <Skills skills={operatorData.skills as OPSkillRaw[]}/>
                     
                 </div>
                 <div className="w-1/2 mx-2">
-                    <Skills skills={operatorData.skills as OPSkillRaw[]}/>
                     <div className="flex flex-row">
                         <div className="w-full">
                             <FieldData field="Name" value={operatorData.name} />
@@ -162,6 +162,7 @@ const OperatorDetail = () => {
             </div>
             
         </Wrapper>
+        
     )
 
 }

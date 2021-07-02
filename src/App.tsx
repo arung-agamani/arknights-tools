@@ -1,25 +1,21 @@
-import React from 'react';
-import { BrowserRouter, Route } from 'react-router-dom';
+import React, { Suspense, lazy } from 'react';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BeatLoader } from 'react-spinners'
+import { TransitionGroup, CSSTransition } from 'react-transition-group'
 
-import Main from './pages/Main';
 import Navbar from './components/Navbar';
-import Operators from './pages/Operators';
-import OperatorDetail from './pages/OperatorDetail';
+import Content from './Content';
 
 function App() {
   return (
     <BrowserRouter>
         <Navbar />
-      <div className="flex flex-col justify-center items-center text-white bg-gradient-to-br bg-black">
-        <Route exact path="/">
-          <Main />
-        </Route>
-        <Route exact path="/operators">
-          <Operators />
-        </Route>
-        <Route exact path="/operator/:charId">
-          <OperatorDetail />
-        </Route>
+      <div className="text-white" style={{ backgroundColor: '#242221'}}>
+        <Suspense fallback={<div className="h-screen w-screen container py-8 flex justify-center">
+                <BeatLoader color="#FFFFFF"/>
+            </div>}>
+          <Content />
+        </Suspense>        
       </div>
     </BrowserRouter>
   );
