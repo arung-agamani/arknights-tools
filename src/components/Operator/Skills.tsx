@@ -3,7 +3,7 @@ import { CSSTransition } from 'react-transition-group';
 import styled from 'styled-components';
 
 import axios from '../../utils/axios';
-import { formatText } from '../../utils/formatter';
+import { transformFormat } from '../../utils/formatter';
 import { OPSkill, OPSkillRaw, SkillLevelUpCondition } from '../../interfaces/Operator';
 // import '../../styles/skills.css'
 
@@ -48,31 +48,6 @@ const Wrapper = styled.div`
     transition: opacity 500ms ease-out;
     }
 `
-
-const regexDesc = new RegExp(/<@([a-z]*).([a-z]*)>([A-Za-z .';%0-9()+-]*){?-?([A-Za-z_@. ]*)([:0-9.%]*)}?([A-Za-z .';%0-9()]*)<\/>/, 'g');
-
-interface SkillLevelBlackboard {
-    key: string;
-    value: number;
-}
-
-function transformFormat(descriptionText: string, blackboard: SkillLevelBlackboard[]) {
-    const descMatch = [...descriptionText.matchAll(regexDesc)]
-    let outText = descriptionText
-    if (descMatch) {
-        console.log("========BEGIN REGEX RESULT============")
-        console.log(descMatch)
-        for (let i = 0; i < descMatch.length; i++) {
-            const blackboardKey = blackboard.find(x => descMatch[i][4].toLowerCase().match(x.key.toLowerCase()))
-            console.log(`${blackboardKey?.key} : ${blackboardKey?.value}`)
-            const formatted = formatText(descMatch[i][1], descMatch[i][2], descMatch[i][4], blackboardKey?.value, descMatch[i][3], descMatch[i][5], descMatch[i][6])
-            // console.log(formatted)
-            outText = outText.replace(descMatch[i][0], `${formatted}`)
-            // console.log(outText)
-        }
-    }
-    return outText
-}
 
 const SkillDetail: React.FC<{ skill: OPSkill, level: number, setLevel?: Function }> = ({skill, setLevel, level}) => {
     const [detail, setDetail] = useState<any>(null)

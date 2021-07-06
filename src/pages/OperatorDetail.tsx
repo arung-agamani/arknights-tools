@@ -5,7 +5,8 @@ import { Link } from 'react-router-dom'
 import { BeatLoader } from 'react-spinners';
 import styled from 'styled-components';
 
-import  axios from '../utils/axios';
+import axios from '../utils/axios';
+import { transformFormat } from '../utils/formatter';
 import Skills from '../components/Operator/Skills';
 import { OPSkillRaw } from '../interfaces/Operator';
 
@@ -70,6 +71,13 @@ const FieldData: React.FC<{field: string, value: string}> = ({ field, value}) =>
     </div>)
 }
 
+const FieldDataHTML: React.FC<{field: string, value: string}> = ({ field, value}) => {
+    return (<div className="flex mb-1 text-xl">
+        <p className="w-1/4 bg-ak-panel py-2 pl-2">{field}</p>
+        <p className="w-3/4 bg-ak-panel2 py-2 px-2" dangerouslySetInnerHTML={{ __html: value}}></p>
+    </div>)
+}
+
 const OperatorDetail = () => {
     const { charId } = useParams<OperatorDetailParams>();
     const [operatorData, setOperatorData] = useState(operatorDataInitialState)
@@ -84,10 +92,25 @@ const OperatorDetail = () => {
         });
         (async() => {
             try {
-                const { data: info } = await axios.get(`/ak/operator/${charId}/all`)
-                setOperatorData(info.data)
-                const { data: handbookData } = await axios.get(`/ak/operator/${charId}/handbook`)
-                setHandbook(handbookData.data);
+                const opInfoCache = sessionStorage.getItem(`${charId}_info`);
+                const opHandbookCache = sessionStorage.getItem(`${charId}_handbook`);
+                if (opInfoCache && opHandbookCache) {
+                    const infoData = JSON.parse(opInfoCache);
+                    const handbookData = JSON.parse(opHandbookCache);
+                    setOperatorData(infoData);
+                    setHandbook(handbookData);
+                } else {
+                    const { data: infoData } = await axios.get(`/ak/operator/${charId}/all`);
+                    const { data: handbookData } = await axios.get(`/ak/operator/${charId}/handbook`)
+                    setOperatorData(infoData.data);
+                    setHandbook(handbookData.data);
+                    sessionStorage.setItem(`${charId}_info`, JSON.stringify(infoData.data));
+                    sessionStorage.setItem(`${charId}_handbook`, JSON.stringify(handbookData.data));
+                }
+                // const { data: info } = await axios.get(`/ak/operator/${charId}/all`)
+                // setOperatorData(info.data)
+                // const { data: handbookData } = await axios.get(`/ak/operator/${charId}/handbook`)
+                // setHandbook(handbookData.data);
                 setIsFetching(false);
             } catch (error) {
                 console.log(error)
@@ -140,7 +163,7 @@ const OperatorDetail = () => {
                             <FieldData field="Name" value={operatorData.name} />
                             <FieldData field="Class" value={transformProfession(operatorData.profession)} />
                             <FieldData field="Position" value={operatorData.position === 'MELEE' ? 'Melee' : 'Ranged'} />
-                            <FieldData field="Traits" value={operatorData.desc} />
+                            <FieldDataHTML field="Traits" value={transformFormat(operatorData.desc, [])}  />
                             <FieldData field="Recruitable" value={operatorData.in_recruit ? 'Yes' : 'No'} />
                             <FieldData field="Rarity" value={`${operatorData.rarity + 1}*`} />
                             <FieldData field="Tags" value={operatorData.tags.join(', ')} />
@@ -152,8 +175,8 @@ const OperatorDetail = () => {
                         <p className="text-4xl my-4 bg-ak-panel px-2 py-2">Story</p>
                         {handbook.stories.length && handbook.stories.map(story => {
                             return <div className="flex flex-col bg-ak-panel shadow-xl mb-4 px-4 py-2">
-                                <span className="text-xl mb-2">{story.storyTitle}</span>
-                                <p className="text-lg">{story.storyText.split('\n').map((item, i) => <p key={i}>{item}</p>)}</p>
+                                <span className="text-2xl mb-2">{story.storyTitle}</span>
+                                <p className="text-lg text-gray-300 text-justify">{story.storyText.split('\n').map((item, i) => <p key={i}>{item}<br/></p>)}</p>
                             </div>
                         })}
                     </div>

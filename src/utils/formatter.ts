@@ -56,6 +56,31 @@ const styles = {
 const stylesKeys = Object.keys(styles);
 const stylesValues = Object.values(styles);
 
+interface SkillLevelBlackboard {
+    key: string;
+    value: number;
+}
+
+const regexDesc = new RegExp(/<@([a-z]*).([a-z]*)>([A-Za-z .';%0-9()+-]*){?-?([A-Za-z_@. ]*)([:0-9.%]*)}?([A-Za-z .';%0-9()]*)<\/>/, 'g');
+
+export function transformFormat(descriptionText: string, blackboard: SkillLevelBlackboard[]) {
+    const descMatch = [...descriptionText.matchAll(regexDesc)]
+    let outText = descriptionText
+    if (descMatch) {
+        console.log("========BEGIN REGEX RESULT============")
+        console.log(descMatch)
+        for (let i = 0; i < descMatch.length; i++) {
+            const blackboardKey = blackboard.find(x => descMatch[i][4].toLowerCase().match(x.key.toLowerCase()))
+            console.log(`${blackboardKey?.key} : ${blackboardKey?.value}`)
+            const formatted = formatText(descMatch[i][1], descMatch[i][2], descMatch[i][4], blackboardKey?.value, descMatch[i][3], descMatch[i][5], descMatch[i][6])
+            // console.log(formatted)
+            outText = outText.replace(descMatch[i][0], `${formatted}`)
+            // console.log(outText)
+        }
+    }
+    return outText
+}
+
 export function formatText(format1: string, format2: string, text: string, target?: number, preSymbol?: string, percentMult?: string, postSymbol?: string): string {
     const key = format1 + '.' + format2
     const idx = stylesKeys.findIndex(x => x === key);
